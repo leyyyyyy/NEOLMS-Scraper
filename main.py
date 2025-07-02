@@ -10,6 +10,13 @@ headers = {
 homeUrl = "https://dlsudshs.edu20.org/log_in/form"
 loginUrl = 'https://dlsudshs.edu20.org/log_in/submit_from_portal?original_host=dlsudshs.edu20.org'
 
+
+class assignmentObj:
+    def __init__(self, name, age, url):
+        self.name = name
+        self.count = age
+        self.url = url
+
 # Getting creds
 with open('credentials.json', 'r') as file:
     data = json.load(file)
@@ -41,8 +48,12 @@ soup = BeautifulSoup(response.text, 'html.parser')
 assignmentList = soup.find_all('a',attrs={'class':'title_and_count'})
 for assignment in assignmentList:
     assignmentData = assignment.find_all('span')
+    dataList = []
     for datum in assignmentData:
-        print(datum)
+        dataList.append(assignmentData)
+    dataList.append("https://dlsudshs.edu20.org" + assignment['href'])
+    print(dataList)
+        
     
 
 
