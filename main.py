@@ -29,12 +29,24 @@ payload = {
 response = session.post(loginUrl, headers=headers, params=payload)
 
 # Cookies
-for cookie in session.cookies:
-    print(f"{cookie.name} = {cookie.value}")
+# for cookie in session.cookies:
+#     print(f"{cookie.name} = {cookie.value}")
 
-# Getting Tokens
+# Getting Assignments
 check_url = 'https://dlsudshs.edu20.org/user_to_do_widget/tasks'
 response = session.get(check_url, headers=headers, cookies=session.cookies, allow_redirects=True)
 
+# Parsing Assignments
+soup = BeautifulSoup(response.text, 'html.parser')
+assignmentList = soup.find_all('a',attrs={'class':'title_and_count'})
+for assignment in assignmentList:
+    assignmentData = assignment.find_all('span')
+    for datum in assignmentData:
+        print(datum)
+    
+
+
+
+# Write to HTML
 outputFile = open("output.html", 'w')
 outputFile.write(response.text)
