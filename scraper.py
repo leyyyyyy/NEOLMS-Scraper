@@ -79,12 +79,6 @@ for subject in subjectList:
             assignEnd = assignEnd + " 11:59 PM"
         assignEnd = datetime.strptime(str(datetime.now().year) + assignEnd, f"%Y%b %d %I:%M %p").isoformat()
         print(assignName + "  " + assignEnd)
-        
- 
 
-
-
-
-# Write to HTML
-outputFile = open("output.html", 'w')
-outputFile.write(response.text)
+# TO DO:
+# NOTION INTEGRATION, CHECK FOR EXISTING TO STOP DUPLICATES
