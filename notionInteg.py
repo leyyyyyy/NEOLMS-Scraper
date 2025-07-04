@@ -1,7 +1,6 @@
 import requests
 import json
-
-
+import scraper
 
 with open('credentials.json', 'r') as file:
     credentials = json.load(file)
@@ -58,7 +57,26 @@ def get_pages(num_pages=None):
 
     return results
 
-# print(get_pages()[0]["properties"]["Subject"]["title"][0]["text"]["content"])
 
+
+def refreshAssignments():
+    pages = get_pages()
+    assignments = scraper.findAssignments()
+    print(assignments)
+    # print(pages[0]["properties"]["Task"]["rich_text"][0]["text"]["content"])
+    for subject in assignments:
+        for task in subject["tasks"]:
+            # checking for duplicate
+            isDuplicate = False
+            for page in pages:
+                pageTitle = page["properties"]["Task"]["rich_text"][0]["text"]["content"]
+                if pageTitle == task['task']:
+                    isDuplicate = True
+            if isDuplicate == False:
+                create_page(subject['subject'], task['task'], task['deadline'], databaseID)
+
+    
+
+
+refreshAssignments()    
 # print(create_page(data))
-
