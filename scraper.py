@@ -56,6 +56,7 @@ def findAssignments():
                     "count": subjectDataRaw[1].text,
                     "url": assignUrl}
         
+        # Changing subj name to alias
         if subjectData["subject"] in aliases:
             subjectData["subject"] = aliases[subjectData["subject"]]
 
@@ -63,32 +64,43 @@ def findAssignments():
         subjectUrl = assignUrl.replace("?redirect_if_one=true", "")
         response = session.get(subjectUrl, headers=headers, cookies=session.cookies, allow_redirects=True)
         soup = BeautifulSoup(response.text, 'html.parser')
-        assignmentTable = soup.find_all('table', attrs={'class':'assignmentsTable'})
+        assignmentTable = soup.find('table', attrs={'class':'assignmentsTable'})
+        assignmentTr = assignmentTable.find_all("tr")
+
         # Assignment Deets
         assignmentList = []
-        for n in assignmentTable:
-            assignDetails = assignmentTable[0].find_all("tr")[1].find_all("td")
-            assignName = assignDetails[1].text.replace("\n", "")
+        i = 0
+        
+        for assignDetails in assignmentTr:
+            if i == 0:
+                i = i + 1
+                continue
+            i = i + 1
 
-            # assignStart = " ".join(assignDetails[2].text.split())
-            # if len(assignStart) <= 6:  
-            #     assignStart = assignStart + " 11:59 PM"
-            # assignStart = datetime.strptime(str(datetime.now().year) + assignStart, f"%Y%b %d %I:%M %p").isoformat()
+            assignDetails = assignDetails.find_all("td")
+            
+            # Name
+            assignmentName = assignDetails[1]
+            assignmentName = assignmentName.text.replace("\n", " ")
+            assignmentName = " ".join(assignmentName.split())
 
-
+            # Deadline
             assignEnd = " ".join(assignDetails[3].text.split())
-            if len(assignEnd) <= 6:    
+            if len(assignEnd) <= 6:  
                 assignEnd = assignEnd + " 11:59 PM"
-            assignEnd = datetime.strptime(str(datetime.now().year) + assignEnd, f"%Y%b %d %I:%M %p").astimezone(timezone.utc).isoformat()
+            assignEnd = datetime.strptime(str(datetime.now().year) + assignEnd, f"%Y%b %d %I:%M %p").isoformat()
+         
             assignmentList.append({
-                "task": assignName,
+                "task": assignmentName,
                 "deadline": assignEnd
             })
-        subjectData["tasks"] = assignmentList
+            subjectData["tasks"] = assignmentList
         data.append(subjectData)
 
 
     return data
+
+findAssignments()
 
 # TO DO:
 # NOTION INTEGRATION, CHECK FOR EXISTING TO STOP DUPLICATES
