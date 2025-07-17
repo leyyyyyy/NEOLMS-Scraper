@@ -15,7 +15,6 @@ if (alertIndex==1){
   var poop = new Request(API_URL)
 poop.headers = {"taskName": alert.textFieldValue()}
 var response = await poop.loadJSON()
-  
 }
   
 

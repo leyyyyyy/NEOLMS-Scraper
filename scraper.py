@@ -154,8 +154,5 @@ def addAssignment(name):
     response = session.post(createUrl, headers=headers, cookies=session.cookies, allow_redirects=True, data = {"task[description]": name, "authenticity_token": token})
     print(response)
 
-# addAssignment("I wish you were here.")
 
-# findAssignments()
-# TO DO:
-# NOTION INTEGRATION, CHECK FOR EXISTING TO STOP DUPLICATES
+
