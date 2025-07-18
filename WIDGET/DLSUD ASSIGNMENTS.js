@@ -10,9 +10,9 @@ const files = FileManager.iCloud();
 
 
 
-var poop = new Request(API_URL)
-poop.headers = {HEADERS}
-var response = await poop.loadJSON()
+var request = new Request(API_URL)
+request.headers = {HEADERS}
+var response = await request.loadJSON()
 
 
 var elementFont = new Font("AppleSDGothicNeo-Light", 13)

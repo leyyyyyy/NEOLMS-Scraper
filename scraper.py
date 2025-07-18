@@ -3,6 +3,7 @@ from bs4 import BeautifulSoup
 import json
 # from notionInteg import create_page
 from datetime import datetime, timezone
+import boto3
 
 
 def findAssignments():
@@ -117,11 +118,24 @@ def findAssignments():
             })
             subjectData["tasks"] = assignmentList
         data.append(subjectData)
+    
+    # CACHING
 
-
+    s3 = boto3.resource('s3')
+    s3object = s3.Object('cheriebucket-661988664823', 'bbg_cache.json')
+    s3object.put(
+        Body=(bytes(json.dumps(data).encode('UTF-8')))
+    )
     return data
 
-findAssignments()
+
+def findLocalAssignments():
+    s3 = boto3.resource('s3')
+    content_object = s3.Object('cheriebucket-661988664823', 'bbg_cache.json')
+    file_content = content_object.get()['Body'].read().decode('utf-8')
+    json_content = json.loads(file_content)
+    print(json_content)
+
 def addAssignment(name):
 
     session = rq.Session()
@@ -153,6 +167,3 @@ def addAssignment(name):
     createUrl = "https://dlsudshs.edu20.org/task/create"
     response = session.post(createUrl, headers=headers, cookies=session.cookies, allow_redirects=True, data = {"task[description]": name, "authenticity_token": token})
     print(response)
-
-
-
