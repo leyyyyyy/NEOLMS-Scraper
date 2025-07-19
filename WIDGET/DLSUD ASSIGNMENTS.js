@@ -8,22 +8,17 @@ Script.complete();
 
 const files = FileManager.iCloud();
 
-
+// GETTING AND HANDLING ASSIGNMENTS
+// GETTING AND HANDLING ASSIGNMENTS
 
 var request = new Request(API_URL)
 request.headers = {HEADERS}
 var response = await request.loadJSON()
 
-
 var elementFont = new Font("AppleSDGothicNeo-Light", 13)
 var subjectFont = new Font('AppleSDGothicNeo-Bold', 13)
 var titleFont = new Font("Helvetica-BoldOblique", 20)
-var title = widget.addText("ASSIGNMENTS");
-title.font = titleFont
-title.textColor = new Color("black", 1)
-title.centerAlignText()
 
-widget.addSpacer()
 var assignCount = 0
 var assignArray = []
 for (let i = 0; i < response.length; i++) {
@@ -34,14 +29,31 @@ for (let i = 0; i < response.length; i++) {
     }
 }
 
-
-
 assignArray.sort((a,b)=> {return Date.parse(a.deadline) - Date.parse(b.deadline)})
 
+console.log(assignArray)
+
+
+// WRITING ASSIGNMENTS TO WIDGET
+// WRITING ASSIGNMENTS TO WIDGET
+
+var stack = widget.addStack();
+var title = stack.addText("ASSIGNMENTS");
+title.font = titleFont
+title.textColor = new Color("black", 1)
+title.centerAlignText()
+stack.addSpacer()
+var total = stack.addText(assignArray.length.toString());
+total.font = titleFont
+total.textColor = new Color("black", 1)
+
+
+widget.addSpacer()
 for (let i = 0; i < assignArray.length; i++) {
   
   var dateObj
   
+  // CUT LIST
   if (i > 13){
     console.log('too much')
     var stack = widget.addStack();
@@ -56,20 +68,19 @@ for (let i = 0; i < assignArray.length; i++) {
   
   
   var stack = widget.addStack();
-  console.log(assignArray[i]["task"])
-
  
-  subj1 = stack.addText(" " + assignArray[i]["subject"])
-  subj1.font = subjectFont
-  subj1.textColor = new Color("black", 1)
+  // WRITE SUBJECT
+  subject = stack.addText(" " + assignArray[i]["subject"])
+  subject.font = subjectFont
+  subject.textColor = new Color("black", 1)
 
   stack.addSpacer()
 
+  // WRITE TASK
   assignmentName = assignArray[i]["task"]
   if (assignmentName.length > 22){
     assignmentName = assignmentName.substr(0, 22) + "..."
   }
-
   count = stack.addText(assignmentName);
   count.font = elementFont
   count.textColor = new Color("black", 1)
@@ -77,6 +88,7 @@ for (let i = 0; i < assignArray.length; i++) {
 
   stack.addSpacer()
 
+  // WRITE DEADLINE TO WIDGET 
   if ("deadline" in assignArray[i]){
     dateObj= new Date(assignArray[i].deadline)
     deadline= dateObj.toString().split(" ")
